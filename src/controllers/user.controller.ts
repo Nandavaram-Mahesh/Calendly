@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import { findAllUsers as findAllUsersService , getUserById as getUserByIdService } from "../services/user.service.js";
 
-function findAllUsers(_req:Request, res:Response){
-    const response = findAllUsersService();
+async function findAllUsers(_req:Request, res:Response){
+    const response = await findAllUsersService();
     res.json(response);
 }
 
-function getUserById(req:Request, res:Response){
+async function getUserById(req:Request, res:Response){
     const {id} = req.params
-    const response = getUserByIdService(Number(id));
+    const response = await getUserByIdService(Number(id));
 
     res.json(response);
 }
