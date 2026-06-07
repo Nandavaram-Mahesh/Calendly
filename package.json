@@ -5,7 +5,8 @@
   "main": "dist/app.js",
   "type": "module",
   "scripts": {
-    "dev": "tsc"
+    "dev": "nodemon  --watch src --ext ts --exec 'tsx src/server.ts'",
+    "start": "tsc"
   },
   "keywords": [],
   "author": "",
