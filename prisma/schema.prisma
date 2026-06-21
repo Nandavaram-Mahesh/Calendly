@@ -12,14 +12,100 @@ datasource db {
   provider = "postgresql"
 }
 
+enum SlotStatus {
+  AVAILABLE
+  BOOKED
+  // CANCELLED
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+
+}
+
+enum HolidayPrefType {
+  PARTIAL 
+  FULL
+}
+
+enum DayOfWeek {
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+}
 
 model User{
   id Int     @id @default(autoincrement())
   email String  @unique
   password  String
+  slots Slot[]
+  inviteeBookings Booking[]
+  availabilityPref AvailabilityPref[]
+  holidayPref HolidayPref[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("users")
 }
 
+model Slot{
+   id Int     @id @default(autoincrement())
+   hostId Int 
+   date DateTime
+   startTime DateTime
+   endTime DateTime
+   duration Int
+   status SlotStatus @default(AVAILABLE)
+   booking Booking?
+   host User @relation(fields: [hostId], references: [id])
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}
+
+model Booking{
+  id Int    @id @default(autoincrement())
+  inviteeId Int 
+  slotId    Int  @unique
+  invitee   User @relation(fields: [inviteeId], references: [id])
+  slot      Slot @relation(fields: [slotId], references: [id])
+  status    BookingStatus
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AvailabilityPref {
+  id         String   @id @default(uuid())
+
+  hostId     Int
+
+  day        DayOfWeek
+
+  startTime  String   // "09:00"
+  endTime    String   // "17:00"
+
+  duration   Int 
+
+  isRecurring Boolean @default(false)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user        User @relation(fields: [hostId], references: [id], onDelete: Cascade)
+
+}
+
+model HolidayPref{
+  id Int @id @default(autoincrement())
+  hostId Int
+  type HolidayPrefType @default(FULL)
+  date DateTime
+  startTime String?
+  endTime String?
+  duration Int ?
+  host User @relation(fields: [hostId], references: [id])
+}
