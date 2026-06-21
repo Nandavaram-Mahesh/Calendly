@@ -1,0 +1,23 @@
+FROM node:alpine
+
+WORKDIR /dev/calendly/backend
+
+COPY package*.json ./
+
+COPY tsconfig.json ./
+
+COPY prisma.config.ts ./
+
+RUN npm install
+
+COPY .env .
+
+COPY src/ ./src/
+
+COPY prisma/ ./prisma/
+
+COPY generated/ ./generated/
+
+RUN npm run build
+
+CMD ["npm", "run", "start"]
