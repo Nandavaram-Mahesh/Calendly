@@ -2,11 +2,12 @@
   "name": "calendly",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/app.js",
+  "main": "dist/src/server.js",
   "type": "module",
   "scripts": {
     "dev": "nodemon  --watch src --ext ts --exec 'tsx src/server.ts'",
-    "start": "tsc"
+    "start":"node ./dist/src/server.js",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
