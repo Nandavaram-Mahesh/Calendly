@@ -1,0 +1,46 @@
+name: calendly
+
+services:
+  app: # Inside Docker networks, containers communicate using the service name, not the container name.
+    build: # "Don't pull an image from Docker Hub. Build my own image."
+      context: . # Use the current project directory as the build context.
+      dockerfile: Dockerfile.dev # Use the specified Dockerfile.
+    ports:
+      - "3001:3001" # HOST_PORT:CONTAINER_PORT
+    networks:
+      - calendly_backend
+    volumes:
+      - .:/backend/calendly  # Bind Mount --> HOST_PATH:CONTAINER_PATH
+      - /backend/calendly/node_modules #
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:password@db:5432/calendly?schema=public
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: calendly
+    networks:
+      - calendly_backend
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    
+
+  redis:
+    image: redis
+    networks:
+      - calendly_backend
+    volumes:
+      - redis_data:/data
+
+networks:
+  calendly_backend:
+    driver: bridge
+  
+volumes:
+  postgres_data:
+  redis_data:
