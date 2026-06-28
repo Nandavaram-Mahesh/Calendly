@@ -1,42 +1,44 @@
 import { Request, Response } from "express";
-import { findAllUsers as findAllUsersService , getUserById as getUserByIdService,createUser as createUserService , updateUser as updateUserService , deleteUser as deleteUserService } from "../services/user.service.js";
+import { getAllUsers,getUserById,createUser,updateUser,deleteUser} from "../services/user.service.js";
+import { sendSuccess } from "../utils/api-response.js";
+import { HTTPStatusCodes } from "../utils/http-status-code.js";
 
-async function findAllUsers(_req:Request, res:Response){
-    const response = await findAllUsersService();
-    res.json(response);
+async function fetchAllUsers(_req:Request, res:Response){
+    const response = await getAllUsers();
+    sendSuccess(res,response);
 }
 
-async function getUserById(req:Request, res:Response){
+async function fetchUserById(req:Request, res:Response){
     const {id} = req.params
-    const response = await getUserByIdService(Number(id));
-
-    res.json(response);
+    const response = await getUserById(Number(id));
+    sendSuccess(res,response);
 }
 
-async function createUser(req:Request, res:Response){
-    const {email,password} = req.body
+async function addUser(req:Request, res:Response){
+    const data = req.body
 
-    const response = await createUserService(email,password);
+    const newUser = await createUser(data);
 
-    res.json(response);
+    sendSuccess(res,newUser,HTTPStatusCodes.CREATED);
 }
 
-async function updateUser(req:Request,res:Response){
+async function modifyUser(req:Request,res:Response){
     const {id} = req.params
     const {password} = req.body
 
-    const response = await updateUserService(Number(id));
+    const response = await updateUser(Number(id));
 
-    return res.json(response);
+    sendSuccess(res,response);
 }
 
-async function deleteUser(req:Request,res:Response){
+async function removeUser(req:Request,res:Response){
     const {id} = req.params
 
-    const response = await deleteUserService(Number(id));
+    const response = await deleteUser(Number(id));
 
-    return res.json(response);
+    sendSuccess(res,response,HTTPStatusCodes.NO_CONTENT);
 }
-export {findAllUsers,getUserById,createUser,updateUser , deleteUser};
+
+export {fetchAllUsers,fetchUserById,addUser,modifyUser,removeUser};
 
 

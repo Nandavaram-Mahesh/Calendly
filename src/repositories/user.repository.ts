@@ -1,22 +1,22 @@
-import { prisma } from "../config/database.js";
+import { prisma } from "../config/index.js";
 
-async function getAll(){
+async function findAll(){
     const users = await prisma.user.findMany();
     return users;
 }
 
-async function getOne(id:number){
+async function findById(id:number){
     const user = await prisma.user.findUnique({where:{id}});
     return user;
 }
 
-async function getUserByEmail(email:string){
+async function findByEmail(email:string){
     const user = await prisma.user.findUnique({where:{email}});
     return user;
 }
 
 
-async function createNewUser(email:string,password:string){    
+async function create(email:string,password:string){    
     const user = await prisma.user.create({
         data:{
             email,
@@ -26,9 +26,9 @@ async function createNewUser(email:string,password:string){
     return user;    
 }
 
-async function deleteExistingUser(id:number){    
+async function remove(id:number){    
     const user = await prisma.user.delete({where:{id}});    
     return user;    
 }
 
-export {getAll,getOne,getUserByEmail,createNewUser,deleteExistingUser};
+export {findAll,findById,findByEmail,create,remove};

@@ -21,11 +21,10 @@ enum SlotStatus {
 enum BookingStatus {
   CONFIRMED
   CANCELLED
-
 }
 
 enum HolidayPrefType {
-  PARTIAL 
+  PARTIAL
   FULL
 }
 
@@ -39,73 +38,90 @@ enum DayOfWeek {
   SATURDAY
 }
 
-model User{
-  id Int     @id @default(autoincrement())
-  email String  @unique
-  password  String
-  slots Slot[]
-  inviteeBookings Booking[]
+model User {
+  id               Int                @id @default(autoincrement())
+  email            String             @unique
+  password         String
+  slots            Slot[]
+  inviteeBookings  Booking[]
   availabilityPref AvailabilityPref[]
-  holidayPref HolidayPref[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  holidayPref      HolidayPref[]
+  eventTypes       EventType[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 
   @@map("users")
 }
 
-model Slot{
-   id Int     @id @default(autoincrement())
-   hostId Int 
-   date DateTime
-   startTime DateTime
-   endTime DateTime
-   duration Int
-   status SlotStatus @default(AVAILABLE)
-   booking Booking?
-   host User @relation(fields: [hostId], references: [id])
-   createdAt DateTime @default(now())
-   updatedAt DateTime @updatedAt
+model EventType {
+  id                  Int      @id @default(autoincrement())
+  hostId              Int
+  title               String
+  description         String?
+  durationMinutes     Int
+  isActive            Boolean  @default(true)
+  locationType        String   @default("ONLINE")
+  locationValue       String?
+  bufferBeforeMinutes Int
+  host                User     @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("event_types")
 }
 
-model Booking{
-  id Int    @id @default(autoincrement())
-  inviteeId Int 
-  slotId    Int  @unique
-  invitee   User @relation(fields: [inviteeId], references: [id])
-  slot      Slot @relation(fields: [slotId], references: [id])
+model Slot {
+  id        Int        @id @default(autoincrement())
+  hostId    Int
+  date      DateTime
+  startTime DateTime
+  endTime   DateTime
+  duration  Int
+  status    SlotStatus @default(AVAILABLE)
+  booking   Booking?
+  host      User       @relation(fields: [hostId], references: [id],onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Booking {
+  id        Int           @id @default(autoincrement())
+  inviteeId Int
+  slotId    Int           @unique
+  invitee   User          @relation(fields: [inviteeId], references: [id])
+  slot      Slot          @relation(fields: [slotId], references: [id])
   status    BookingStatus
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 }
 
 model AvailabilityPref {
-  id         String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  hostId     Int
+  hostId Int
 
-  day        DayOfWeek
+  day DayOfWeek
 
-  startTime  String   // "09:00"
-  endTime    String   // "17:00"
+  startTime String // "09:00"
+  endTime   String // "17:00"
 
-  duration   Int 
+  duration Int
 
   isRecurring Boolean @default(false)
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  user        User @relation(fields: [hostId], references: [id], onDelete: Cascade)
-
+  user User @relation(fields: [hostId], references: [id], onDelete: Cascade)
 }
 
-model HolidayPref{
-  id Int @id @default(autoincrement())
-  hostId Int
-  type HolidayPrefType @default(FULL)
-  date DateTime
+model HolidayPref {
+  id        Int             @id @default(autoincrement())
+  hostId    Int
+  type      HolidayPrefType @default(FULL)
+  date      DateTime
   startTime String?
-  endTime String?
-  duration Int ?
-  host User @relation(fields: [hostId], references: [id])
+  endTime   String?
+  duration  Int?
+  host      User            @relation(fields: [hostId], references: [id])
 }

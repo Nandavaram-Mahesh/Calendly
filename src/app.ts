@@ -1,6 +1,7 @@
 import express, {Express, Request, Response,NextFunction } from 'express'
-import { userRouter } from './routes/index.js';
-import { globalErrorHandler } from './middlewares/error.middleware.js';
+
+import apiRouter  from './routes/index.js';
+import { globalErrorHandler } from './middlewares/index.js';
 
 const app:Express = express()
 
@@ -20,7 +21,7 @@ app.get('/health',(req:Request,res:Response)=>{
     })
 })
 
-app.use('/users',userRouter);
+app.use('/api',apiRouter);
 
 app.use(globalErrorHandler);
 

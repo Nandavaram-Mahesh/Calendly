@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodType } from "zod";
-import { BadRequestError } from "../utils/error.js";
+
+import { BadRequestError } from "../utils/index.js";
 
 const validate = (schema:ZodType)=>{
-    return (req:Request, res:Response,next:NextFunction) => {
+    return (req:Request, _res:Response,next:NextFunction) => {
         
         const result = schema.safeParse(req.body);
 

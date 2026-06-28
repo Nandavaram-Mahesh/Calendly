@@ -1,7 +1,10 @@
 import 'dotenv/config';
 
-const PORT = process.env.PORT || 3000;
-const DATABASE_URL = process.env.DATABASE_URL || '';
+
+const  AppConfig = new Map()
+
+AppConfig.set('PORT',  process.env.PORT || 3000);
+AppConfig.set('DATABASE_URL', process.env.DATABASE_URL || '');
 
 
-export { PORT, DATABASE_URL };
+export {AppConfig};

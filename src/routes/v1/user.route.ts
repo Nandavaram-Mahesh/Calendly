@@ -1,17 +1,19 @@
 import { Router} from 'express';
-import { findAllUsers , getUserById  , createUser ,updateUser,deleteUser } from '../../controllers/user.controller.js';
+import { fetchAllUsers,fetchUserById,addUser,modifyUser,removeUser } from '../../controllers/index.js';
+import { validate } from '../../middlewares/index.js';
+import { createUserSchema } from '../../dto/index.js';
 
 
 
 const userRouter:Router = Router();
 
-userRouter.get('/',findAllUsers);
-userRouter.get('/:id',getUserById);
+userRouter.get('/',fetchAllUsers);
+userRouter.get('/:id',fetchUserById);
 
-userRouter.post('/',createUser);
+userRouter.post('/',validate(createUserSchema),addUser);
 
-// userRouter.patch("/:id",updateUser);
-userRouter.delete("/:id",deleteUser);
+// userRouter.patch("/:id",modifyUser);
+userRouter.delete("/:id",removeUser);
 
 
 export {userRouter};

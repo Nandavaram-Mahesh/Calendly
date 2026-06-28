@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "../utils/error.js";
+import { AppError } from "../utils/index.js";
 
 const globalErrorHandler= (err:any,_req:Request,res:Response,_next:NextFunction) =>{
     if(err instanceof AppError){
