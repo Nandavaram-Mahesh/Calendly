@@ -14,8 +14,8 @@ model User {
 model Profile {
   id     Int  @id @default(autoincrement())
   bio    String?
-  user   User @relation(fields: [userId], references: [id])
   userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
 }
 ```
 
@@ -112,10 +112,25 @@ The `Enrollment` table acts as a junction table and can store additional data su
 
 ---
 
-## Quick Reference
 
-| Relation Type | Foreign Key Location |
-|---------------|---------------------|
-| One-to-One | On one side, marked `@unique` |
-| One-to-Many | On the "many" side |
-| Many-to-Many | Join table (implicit or explicit) |
+
+# schema.prisma changed
+        ↓
+# npx prisma format        ← optional
+        ↓
+# npx prisma validate      ← optional but safe
+        ↓
+# npx prisma migrate dev --name your_change
+        ↓
+# (npx prisma generate)    ← auto-runs after migrate dev
+        ↓
+# restart dev server
+
+
+
+
+
+
+
+
+
