@@ -1,29 +1,33 @@
+import { User } from "../../generated/prisma/client.js";
 import { prisma } from "../config/index.js";
+import { CreateUserDto ,UpdateUserDto} from "../dtos/index.js";
 
-async function findAll(){
+async function findAllUsers(){
     const users = await prisma.user.findMany();
     return users;
 }
 
-async function findById(id:number){
+async function findUserById(id:number):Promise<User|null> {
     const user = await prisma.user.findUnique({where:{id}});
     return user;
 }
 
-async function findByEmail(email:string){
+async function findUserByEmail(email:string):Promise<User|null> {
     const user = await prisma.user.findUnique({where:{email}});
     return user;
 }
 
 
-async function create(email:string,password:string){    
+async function create(data:CreateUserDto & { slug: string }){    
     const user = await prisma.user.create({
-        data:{
-            email,
-            password
-        }
+        data
     });    
     return user;    
+}
+
+async function update(id:number,data:UpdateUserDto){
+    const user = await prisma.user.update({where:{id},data});    
+    return user;
 }
 
 async function remove(id:number){    
@@ -31,4 +35,4 @@ async function remove(id:number){
     return user;    
 }
 
-export {findAll,findById,findByEmail,create,remove};
+export {findAllUsers,findUserById,findUserByEmail,create,update,remove};

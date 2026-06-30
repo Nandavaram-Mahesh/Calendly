@@ -1,29 +1,30 @@
-import { createUserDTO } from "../dto/index.js";
-import {findAll,findById,findByEmail,create,remove} from "../repositories/index.js";
-import { BadRequestError, NotFoundError } from "../utils/index.js";
+import { User } from "../../generated/prisma/client.js";
+
+import { CreateUserDto,UpdateUserDto } from "../dtos/index.js";
+import { BadRequestError, generateUserSlug, NotFoundError } from "../utils/index.js";
+import {findAllUsers,findUserById,findUserByEmail,create,update,remove} from "../repositories/index.js";
 
 
-async function createUser(data:createUserDTO):Promise<any>{
-    // if user  already exists throw error
-    const existingUser = await findByEmail(data.email);
+async function createUser(data:CreateUserDto):Promise<User>{
+    
+    const existingUser = await findUserByEmail(data.email);
 
     if(existingUser) throw new BadRequestError('User already exists'); 
     
-    // create user
-    const user = await create(data.email,data.password);
+    const slugParsed = data.slug ? data.slug : generateUserSlug(); 
     
-    return user
+    return create({...data,slug: slugParsed})
 }
 
 
-async function getAllUsers(){
- const users =  await findAll();
+async function getAllUsers():Promise<User[]> {
+ const users =  await findAllUsers();
  return users;   
 }
 
 
-async function getUserById(id:number){
-    const user =  await findById(id)
+async function getUserById(id:number):Promise<User> {
+    const user =  await findUserById(id)
     
     if(!user) throw new NotFoundError('User not found');
     
@@ -31,19 +32,27 @@ async function getUserById(id:number){
 }
 
 
-async function updateUser(id:number){
-
-}
-
-async function deleteUser(id:number){
-    
-    const user =  await findById(id)
+async function updateUser(id:number,data:UpdateUserDto):Promise<User>{
+    const user  = await findUserById(id)
     
     if(!user) throw new NotFoundError('User not found');
     
-    const deletedUser = await remove(id);
+    if(data.email && data.email !== user.email){
+        const existingUser = await findUserByEmail(data.email);
+        if(existingUser) throw new BadRequestError('User with this email already exists');
+    }
+
+    return update(id,data)
+}
+
+
+async function deleteUser(id:number):Promise<User>{
     
-    return deletedUser
+    const user =  await findUserById(id)
+    
+    if(!user) throw new NotFoundError('User not found');
+    
+    return remove(id);
 }
 
 

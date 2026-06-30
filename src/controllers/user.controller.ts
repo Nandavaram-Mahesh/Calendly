@@ -4,31 +4,30 @@ import { sendSuccess } from "../utils/api-response.js";
 import { HTTPStatusCodes } from "../utils/http-status-code.js";
 
 async function fetchAllUsers(_req:Request, res:Response){
-    const response = await getAllUsers();
-    sendSuccess(res,response);
+    const users = await getAllUsers();
+    sendSuccess(res,users);
 }
 
 async function fetchUserById(req:Request, res:Response){
     const {id} = req.params
-    const response = await getUserById(Number(id));
-    sendSuccess(res,response);
+    const user = await getUserById(Number(id));
+    sendSuccess(res,user);
 }
 
 async function addUser(req:Request, res:Response){
     const data = req.body
 
-    const newUser = await createUser(data);
+    const user = await createUser(data);
 
-    sendSuccess(res,newUser,HTTPStatusCodes.CREATED);
+    sendSuccess(res,user,HTTPStatusCodes.CREATED,'User created successfully');
 }
 
 async function modifyUser(req:Request,res:Response){
     const {id} = req.params
-    const {password} = req.body
 
-    const response = await updateUser(Number(id));
+    const response = await updateUser(Number(id),req.body);
 
-    sendSuccess(res,response);
+    sendSuccess(res,response,HTTPStatusCodes.OK,'User updated successfully');
 }
 
 async function removeUser(req:Request,res:Response){
@@ -36,7 +35,7 @@ async function removeUser(req:Request,res:Response){
 
     const response = await deleteUser(Number(id));
 
-    sendSuccess(res,response,HTTPStatusCodes.NO_CONTENT);
+    sendSuccess(res,response,HTTPStatusCodes.NO_CONTENT,'User deleted successfully');
 }
 
 export {fetchAllUsers,fetchUserById,addUser,modifyUser,removeUser};

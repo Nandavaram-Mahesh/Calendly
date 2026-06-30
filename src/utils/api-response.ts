@@ -5,7 +5,13 @@ interface SuccessPayload<T>{
     message?: string;
 }
 function sendSuccess<T>(res:Response,data:T,statusCode:number=200,message?:string):void{
-    const body:SuccessPayload<T> = {success:true,data};
+    
+    const body:SuccessPayload<T> = {
+        success:true,
+        data,
+        ...(message && {message})
+    };
+
     res.status(statusCode).json(body);
 }
 
