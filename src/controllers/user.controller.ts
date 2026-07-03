@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { getAllUsers,getUserById,createUser,updateUser,deleteUser} from "../services/user.service.js";
-import { sendSuccess } from "../utils/api-response.js";
-import { HTTPStatusCodes } from "../utils/http-status-code.js";
+
+import { getAllUsers,getUserById,createUser,updateUser,deleteUser} from "../services/index.js";
+import { sendSuccess,HTTPStatusCodes } from "../utils/index.js";
 
 async function fetchAllUsers(_req:Request, res:Response){
     const users = await getAllUsers();
