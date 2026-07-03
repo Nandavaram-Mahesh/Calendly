@@ -1,6 +1,6 @@
 import {Router} from 'express';
-import { addEventType, fetchAllEventTypes, fetchEventTypeById, modifyEventType, removeEventType } from '../../controllers/index.js';
-import { createEventTypeSchema, updateEventTypeSchema } from '../../dto/index.js';
+import { addEventType, fetchAllEventTypes, fetchEventTypeById, getPublicEventType, modifyEventType, removeEventType } from '../../controllers/index.js';
+import { createEventTypeSchema, updateEventTypeSchema } from '../../dtos/index.js';
 import { validate } from '../../middlewares/index.js';
 
 
@@ -15,5 +15,7 @@ eventTypeRouter.post('/',validate(createEventTypeSchema),addEventType);
 eventTypeRouter.patch('/:id',validate(updateEventTypeSchema),modifyEventType);
 
 eventTypeRouter.delete('/:id',removeEventType);
+
+
 
 export {eventTypeRouter};

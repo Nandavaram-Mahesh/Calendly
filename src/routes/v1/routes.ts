@@ -7,7 +7,8 @@ import express from 'express';
 const router = express.Router();
 
 router.use('/users',userRouter);
-router.use('/event-type',eventTypeRouter);
+router.use('/event-types',eventTypeRouter);
+router.use('/public',eventTypeRouter);
 
 
 export default router;
