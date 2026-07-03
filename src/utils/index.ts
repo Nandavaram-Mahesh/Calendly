@@ -1,6 +1,6 @@
-import {sendSuccess} from './api-response.js';
-import {HTTPStatusCodes} from './http-status-code.js';
-import { generateUserSlug } from './slug.js';
+import {sendSuccess} from './apiResponse.js';
+import {HTTPStatusCodes} from './httpStatusCode.js';
+import { generateUserSlug ,generateEventSlug} from './slug.js';
 import {AppError,BadRequestError,NotFoundError,UnauthorizedError,ForbiddenError,ConflictError,TooManyRequestsError,InternalServerError} from './error.js';
 
-export {sendSuccess,HTTPStatusCodes,AppError,BadRequestError,NotFoundError,UnauthorizedError,ForbiddenError,ConflictError,TooManyRequestsError,InternalServerError,generateUserSlug};
+export {sendSuccess,HTTPStatusCodes,AppError,BadRequestError,NotFoundError,UnauthorizedError,ForbiddenError,ConflictError,TooManyRequestsError,InternalServerError,generateUserSlug,generateEventSlug};

@@ -1,4 +1,4 @@
 import { createUserSchema, CreateUserDto,updateUserSchema,UpdateUserDto } from "./user.dto.js";
-import { createEventTypeSchema, CreateEventTypeDTO,updateEventTypeSchema,UpdateEventTypeDTO} from "./eventType.dto.js";
+import { createEventTypeSchema,CreateEventTypeDto,updateEventTypeSchema,UpdateEventTypeDto} from "./eventType.dto.js";
 
-export { createUserSchema, CreateUserDto, updateUserSchema,UpdateUserDto,createEventTypeSchema,CreateEventTypeDTO,updateEventTypeSchema,UpdateEventTypeDTO};
+export { createUserSchema, CreateUserDto, updateUserSchema,UpdateUserDto,createEventTypeSchema,CreateEventTypeDto,updateEventTypeSchema,UpdateEventTypeDto};
