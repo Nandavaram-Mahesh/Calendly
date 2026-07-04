@@ -1,10 +1,6 @@
 import { customAlphabet,nanoid } from "nanoid";
 
-export function generateUserSlug(){
-    return nanoid(8);
-}
-
-export function generateEventSlug(text:string){
+export function generateSlug(text:string){
     const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 8);
     
     const slug = text
@@ -18,3 +14,4 @@ export function generateEventSlug(text:string){
 
     return `${slug}-${nanoid()}`
 }
+
