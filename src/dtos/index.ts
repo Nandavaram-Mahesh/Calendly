@@ -1,4 +1,5 @@
-import { createUserSchema, CreateUserDto,updateUserSchema,UpdateUserDto } from "./user.dto.js";
-import { createEventTypeSchema,CreateEventTypeDto,updateEventTypeSchema,UpdateEventTypeDto} from "./eventType.dto.js";
+import { createUserSchema, type CreateUserDto,updateUserSchema,type UpdateUserDto } from "./user.dto.js";
+import { createEventTypeSchema,type CreateEventTypeDto,updateEventTypeSchema,type  UpdateEventTypeDto} from "./eventType.dto.js";
+import {createAvailabilityRuleSchema,type CreateAvailabilityRuleDto,updateAvailabilityRuleSchema,type UpdateAvailabilityRuleDto,createAvailabilityExceptionSchema,type CreateAvailabilityExceptionDto,updateAvailabilityExceptionSchema,type UpdateAvailabilityExceptionDto}  from "./availability.dto.js";
 
-export { createUserSchema, CreateUserDto, updateUserSchema,UpdateUserDto,createEventTypeSchema,CreateEventTypeDto,updateEventTypeSchema,UpdateEventTypeDto};
+export { createUserSchema, CreateUserDto, updateUserSchema, UpdateUserDto,createEventTypeSchema, CreateEventTypeDto,updateEventTypeSchema, UpdateEventTypeDto,createAvailabilityRuleSchema, CreateAvailabilityRuleDto,updateAvailabilityRuleSchema, UpdateAvailabilityRuleDto,createAvailabilityExceptionSchema, CreateAvailabilityExceptionDto,updateAvailabilityExceptionSchema, UpdateAvailabilityExceptionDto};

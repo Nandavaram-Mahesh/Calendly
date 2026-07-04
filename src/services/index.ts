@@ -1,3 +1,4 @@
 import {createUser,getAllUsers,getUserById,updateUser,deleteUser} from './user.service.js';
 import {getAllEventTypes,getEventTypeById,createEventType,updateEventType,deleteEventType,getEventTypePublic} from './eventType.service.js';
-export {createUser,getAllUsers,getUserById,updateUser,deleteUser,getAllEventTypes,getEventTypeById,createEventType,updateEventType,deleteEventType,getEventTypePublic};
+import { getRulesByHost,createAvailabilityRule, updateAvailabilityRule, deleteAvailabilityRule, getExceptionsByHost, createAvailabilityException, updateAvailabilityException, deleteAvailabilityException    } from './availability.service.js'
+export {createUser,getAllUsers,getUserById,updateUser,deleteUser,getAllEventTypes,getEventTypeById,createEventType,updateEventType,deleteEventType,getEventTypePublic,getRulesByHost,createAvailabilityRule, updateAvailabilityRule, deleteAvailabilityRule, getExceptionsByHost, createAvailabilityException, updateAvailabilityException, deleteAvailabilityException};
