@@ -1,7 +1,7 @@
 import { User } from "../../generated/prisma/client.js";
 
 import { CreateUserDto,UpdateUserDto } from "../dtos/index.js";
-import { BadRequestError, generateUserSlug, NotFoundError } from "../utils/index.js";
+import { BadRequestError, generateSlug, NotFoundError } from "../utils/index.js";
 import {findAllUsers,findUserById,findUserByEmail,create,update,remove} from "../repositories/index.js";
 
 
@@ -11,7 +11,7 @@ async function createUser(data:CreateUserDto):Promise<User>{
 
     if(existingUser) throw new BadRequestError('User already exists'); 
     
-    const slugParsed = data.slug ? data.slug : generateUserSlug(); 
+    const slugParsed =  data.slug ?? generateSlug(data.name); 
     
     return create({...data,slug: slugParsed})
 }
