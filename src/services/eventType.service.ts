@@ -1,6 +1,6 @@
 import { CreateEventTypeDto, UpdateEventTypeDto } from "../dtos/index.js";
 import { findById,findByHostId,createET,updateET,removeET,findByHostAndSlug,findActiveByHostIdAndEventSlug,slugExistsForHost,findActiveEventTypesByHost, findUserById} from "../repositories/index.js";
-import {BadRequestError, ForbiddenError, generateEventSlug} from "../utils/index.js";
+import {BadRequestError, ForbiddenError, generateSlug} from "../utils/index.js";
 
 
 async function getAllEventTypes(hostId:number) {
@@ -16,7 +16,7 @@ async function getEventTypeById(eventTypeId:number) {
 
 
 async function createEventType(hostId:number,data:CreateEventTypeDto) {
-    const slugPassed =  data.slug ?? generateEventSlug(data.title);
+    const slugPassed =  data.slug ?? generateSlug(data.title);
 
     if(!slugPassed) throw new BadRequestError('Slug is required');
     
