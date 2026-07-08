@@ -86,5 +86,21 @@ async function removeException(id:number){
     return availabilityException;
 }
 
+async function findExceptionsByUserInRange(
+    userId: number,
+    startDate: Date,
+    endDate: Date
+) {
+    return prisma.availabilityException.findMany({
+        where: {
+            userId,
+            date: {
+                gte: startDate,
+                lte: endDate,
+            },
+        },
+        orderBy: { date: "asc" },
+    });
+}
 
-export { findRuleById,findRuleByHostId,findRuleByHostIdAndWeekday,findActiveRuleByHost,createRule,updateRule,removeRule,findExceptionByHost,findExceptionById,createException,updateException,removeException };
+export { findRuleById,findRuleByHostId,findRuleByHostIdAndWeekday,findActiveRuleByHost,createRule,updateRule,removeRule,findExceptionByHost,findExceptionById,createException,updateException,removeException,findExceptionsByUserInRange };
