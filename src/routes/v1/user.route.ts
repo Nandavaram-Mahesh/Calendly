@@ -1,7 +1,7 @@
 import { Router} from 'express';
 import { fetchAllUsers,fetchUserById,addUser,modifyUser,removeUser } from '../../controllers/index.js';
 import { validate } from '../../middlewares/index.js';
-import { createUserSchema } from '../../dtos/index.js';
+import { createUserSchema, updateUserSchema } from '../../dtos/index.js';
 
 
 
@@ -12,7 +12,7 @@ userRouter.get('/:id',fetchUserById);
 
 userRouter.post('/',validate(createUserSchema),addUser);
 
-userRouter.patch("/:id",modifyUser);
+userRouter.patch("/:id",validate(updateUserSchema),modifyUser);
 userRouter.delete("/:id",removeUser);
 
 
