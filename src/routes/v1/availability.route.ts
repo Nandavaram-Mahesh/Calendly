@@ -2,8 +2,11 @@ import { Router } from 'express';
 import { fetchRules, createRule, updateRule, removeRule, fetchExceptions, createException, updateException, removeException } from '../../controllers/availability.controller.js';
 import { createAvailabilityExceptionSchema, createAvailabilityRuleSchema, updateAvailabilityExceptionSchema, updateAvailabilityRuleSchema } from '../../dtos/index.js';
 import { validate } from '../../middlewares/validate.middleware.js';
+import { requireUserId } from '../../middlewares/requireUserId.middleware.js';
 
 const availabilityRouter = Router();
+
+availabilityRouter.use(requireUserId);
 
 availabilityRouter.get('/rules', fetchRules);
 availabilityRouter.post('/rules',validate(createAvailabilityRuleSchema) ,createRule);
