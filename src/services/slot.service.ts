@@ -6,7 +6,7 @@ import { findExceptionsByUserInRange } from "../repositories/availability.reposi
 import { applyExceptionsForDate, overlapsBooked, splitIntoSlots, TimeWindow, windowsForWeekdayRule } from "./slot-generation.service.js";
 import { AppConfig } from "../config/index.js";
 
-interface RegenerateHostSlotsInput{
+export interface RegenerateHostSlotsInput{
     hostId:number,
     from?:string, // YYYY-MM-DD
     to?:string    // YYYY-MM-DD
