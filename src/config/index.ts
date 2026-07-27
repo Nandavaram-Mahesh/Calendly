@@ -1,5 +1,6 @@
 import {connectDatabase} from './database.js'
-import { AppConfig} from './env.js';
+import { AppConfig,TEMPORAL_ADDRESS, TEMPORAL_NAMESPACE, TEMPORAL_TASK_QUEUE} from './env.js';
 import {prisma} from './database.js';
 
-export {connectDatabase,AppConfig,prisma};
+
+export {connectDatabase,AppConfig,prisma,TEMPORAL_ADDRESS, TEMPORAL_NAMESPACE, TEMPORAL_TASK_QUEUE};
