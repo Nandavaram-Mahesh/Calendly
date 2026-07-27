@@ -1,49 +1,33 @@
-name: calendly
-
 services:
-  app: # Inside Docker networks, containers communicate using the service name, not the container name.
-    build: # "Don't pull an image from Docker Hub. Build my own image."
-      context: . # Use the current project directory as the build context.
-      dockerfile: Dockerfile.dev # Use the specified Dockerfile.
-    ports:
-      - "3001:3001" # HOST_PORT:CONTAINER_PORT
-      - "5555:5555"
-    networks:
-      - calendly_backend
-    volumes:
-      - .:/backend/calendly  # Bind Mount --> HOST_PATH:CONTAINER_PATH
-      - /backend/calendly/node_modules #
+  temporal:
+    image: temporalio/auto-setup:1.25.2 
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:password@db:5432/calendly?schema=public
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-
-  db:
-    image: postgres
-    environment:
+      DB: postgres12
+      DB_PORT: 5432
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: calendly
+      POSTGRES_PWD: password
+      POSTGRES_SEEDS: host.docker.internal
+      DYNAMIC_CONFIG_FILE_PATH: config/dynamicconfig/development-sql.yaml
     ports:
-      - "5432:5432"
-    networks:
-      - calendly_backend
+      - "7233:7233"
     volumes:
-      - postgres_data:/var/lib/postgresql
-    
+      - ./temporal/dynamicConfig:/etc/temporal/config/dynamicconfig   # Host:Container
+      
 
-  redis:
-    image: redis
-    networks:
-      - calendly_backend
-    volumes:
-      - redis_data:/data
+  temporal-ui:
+    image: temporalio/ui:2.31.2 
+    depends_on:
+      - temporal 
+    environment:
+      TEMPORAL_ADDRESS: temporal:7233
+      TEMPORAL_CORS_ORIGINS: http://localhost:3000,http://localhost:5173
+    ports:
+      - "8080:8080"
 
-networks:
-  calendly_backend:
-    driver: bridge
-  
-volumes:
-  postgres_data:
-  redis_data:
+  # mailhog:
+  #   image: mailhog/mailhog:v1.0.1
+  #   ports:
+  #     - "1025:1025" # SMTP server
+  #     - "8025:8025" # web interface
