@@ -18,7 +18,7 @@ export interface TimeWindow {
  * Output:
  * DateTime = "2026-01-01T09:30:00.000Z"
  */
-export function parseTimeOnDate(date: DateTime, time: string, timezone: string) {
+export function parseTimeOnDate(date: DateTime, time: string, timezone: string): DateTime {
 
     const [hour, minute] = time.split(":").map(Number);
 
@@ -58,33 +58,29 @@ export function mergeWindows(windows: TimeWindow[]) : TimeWindow[] {
     return mergedResult;
 }
 
-export function splitIntoSlots(
-    windows: TimeWindow[],
-    durationMinutes: number,
-    bufferBeforeMinutes: number,
-    bufferAfterMinutes: number
-) : TimeWindow[] {
+export function splitIntoSlots(windows: TimeWindow[],durationMinutes: number, bufferBeforeMinutes: number, bufferAfterMinutes: number) : TimeWindow[] {
+
+    let TotalMinutes = durationMinutes + bufferBeforeMinutes + bufferAfterMinutes;
 
     const slots: TimeWindow[] = [];
 
-    const totalMinutes = durationMinutes + bufferBeforeMinutes + bufferAfterMinutes;
+    for(let window of windows) {
 
-    for(const window of windows) {
-        let cursor = window.start;
+        let cursor = window.start
 
-        while(cursor.plus({ minutes: totalMinutes}) <= window.end) {
-            const slotStart = cursor.plus({ minutes: bufferBeforeMinutes });
-            const slotEnd = slotStart.plus({ minutes: durationMinutes });
+        while(cursor.plus({minutes: TotalMinutes}) <= window.end) {
+            
+            let slotStart = cursor.plus({minutes: bufferBeforeMinutes});
+            let slotEnd = slotStart.plus({minutes: durationMinutes});
+            
+            slots.push({start: slotStart, end: slotEnd});
 
-            slots.push({ start: slotStart, end: slotEnd });
-
-            cursor = cursor.plus({ minutes: durationMinutes });
+            cursor.plus({minutes: durationMinutes});
         }
     }
 
-    return slots;
+    return slots
 }
-
 
 export function subtractWindows(windows: TimeWindow[], block: TimeWindow) : TimeWindow[] {
     const result: TimeWindow[] = [];
@@ -95,12 +91,12 @@ export function subtractWindows(windows: TimeWindow[], block: TimeWindow) : Time
 
         if(!interval.overlaps(blockInterval)) {
             result.push(window);
-            return result;
+            continue;
         }
 
         if(block.start > window.start) {
             result.push({ start: window.start, end: block.start });
-        }
+        } 
 
         if(block.end < window.end) {
             result.push({ start: block.end, end: window.end });
@@ -163,7 +159,6 @@ export function applyExceptionsForDate(
     return mergeWindows(windows);
 
 }
-
 
 export function windowsForWeekdayRule(
     date: DateTime,
