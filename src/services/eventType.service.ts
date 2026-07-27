@@ -1,5 +1,6 @@
 import { CreateEventTypeDto, UpdateEventTypeDto } from "../dtos/index.js";
 import { findById,findByHostId,createET,updateET,removeET,findByHostAndSlug,findActiveByHostIdAndEventSlug,slugExistsForHost,findActiveEventTypesByHost, findUserById} from "../repositories/index.js";
+import { startRegenerateHostSlotsWorkflow } from "../temporal/client.js";
 import {BadRequestError, ForbiddenError, generateSlug} from "../utils/index.js";
 
 
@@ -24,7 +25,12 @@ async function createEventType(hostId:number,data:CreateEventTypeDto) {
 
     if(slugTaken) throw new BadRequestError('Slug already exists for this host');
 
-    return createET(hostId,{...data,slug:slugPassed});
+    const eventType = await createET(hostId,{...data,slug:slugPassed});
+
+    await startRegenerateHostSlotsWorkflow({hostId});
+
+    return eventType;
+
 }
 
 
