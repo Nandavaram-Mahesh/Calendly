@@ -15,12 +15,12 @@ export async function regenerateHostSlots(input:RegenerateHostSlotsInput){
     
     const user = await findUserById(input.hostId)
 
-    if(!user) throw new NotFoundError('User not found');
+    if(!user) return;
 
 
     // Convert from and to to dates using luxon , so that we can perform som operation on it (ex:plus,minus...)
-    const from = input.from ? DateTime.fromISO(input.from,{zone:'UTC'}).startOf('day'):DateTime.now().setZone('UTC').startOf('day'); //  2026-06-01 -> 2026-06-01T00:00:00:000Z
-    const to = input.to ? DateTime.fromISO(input.to,{zone:'UTC'}).endOf('day'):from.plus({days:AppConfig.get('SLOT_GENERATION_DAYS')});         //   2026-06-01 -> 2026-06-01T23:59:59:999Z
+    const from = input.from ? DateTime.fromISO(input.from,{zone:'utc'}).startOf('day'):DateTime.now().startOf('day').toUTC(); //  2026-06-01 -> 2026-06-01T00:00:00:000Z
+    const to = input.to ? DateTime.fromISO(input.to,{zone:'utc'}).endOf('day'):from.plus({days:AppConfig.get('SLOT_GENERATION_DAYS')}).toUTC();         //   2026-06-01 -> 2026-06-01T23:59:59:999Z
 
     // Fetch all the rules, exceptions , eventtypes , bookedslots of a user
     const[rules, exceptions, eventTypes, bookedSlots] = await Promise.all([
@@ -46,7 +46,7 @@ export async function regenerateHostSlots(input:RegenerateHostSlotsInput){
             
             const dateKey = cursor.toISODate(); // 2026-06-01
             
-            const dayExceptions = exceptions.filter(ex=>DateTime.fromJSDate(ex.date).toISODate() === dateKey); // we are converting the js Date to luxon so that we can convert it to ISODate easily
+            const dayExceptions = exceptions.filter(ex=>DateTime.fromJSDate(ex.date,{ zone: 'utc'}).toISODate() === dateKey); // we are converting the js Date to luxon so that we can convert it to ISODate easily
             
             const dayExceptionsWithTimeZone = dayExceptions.map((ex) => ({
                 type: ex.type,
