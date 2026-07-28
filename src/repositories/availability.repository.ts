@@ -7,19 +7,19 @@ async function findRuleById(id:number){
 }
 
 async function findRuleByHostId(hostId:number){
-    const availabilityRule = await prisma.availabilityRule.findMany({where:{id:hostId},orderBy: [{ weekday: "asc" }, { startTime: "asc" }],});
+    const availabilityRule = await prisma.availabilityRule.findMany({where:{userId:hostId},orderBy: [{ weekday: "asc" }, { startTime: "asc" }],});
     return availabilityRule;
 }
 
 async function findRuleByHostIdAndWeekday(hostId:number,weekday:number){
-    const availabilityRule = await prisma.availabilityRule.findMany({where:{id:hostId,weekday}});
+    const availabilityRule = await prisma.availabilityRule.findMany({where:{userId:hostId,weekday}});
     return availabilityRule;
 }
 
 
 async function findActiveRuleByHost(hostId:number){
     return prisma.availabilityRule.findMany({
-        where: { hostId, isActive: true },
+        where: { userId:hostId, isActive: true },
         orderBy: [{ weekday: "asc" }, { startTime: "asc" }],
     });
 }
