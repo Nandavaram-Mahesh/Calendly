@@ -75,7 +75,7 @@ export function splitIntoSlots(windows: TimeWindow[],durationMinutes: number, bu
             
             slots.push({start: slotStart, end: slotEnd});
 
-            cursor.plus({minutes: durationMinutes});
+            cursor = cursor.plus({minutes: durationMinutes});
         }
     }
 
