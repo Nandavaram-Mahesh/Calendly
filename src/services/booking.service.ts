@@ -3,7 +3,7 @@ import { prisma } from "../config/database.js";
 import { createBookingDto } from "../dtos/booking.dto.js";
 import { createBooking } from "../repositories/booking.repository.js";
 import { findSlotById, markSlotBookedIfAvailable } from "../repositories/slot.repository.js";
-import { startRegenerateHostSlotsWorkflow } from "../temporal/client.js";
+import { starBookingNotificationWorkflow, startRegenerateHostSlotsWorkflow } from "../temporal/client.js";
 import { BadRequestError, NotFoundError } from "../utils/error.js";
 
 
@@ -53,7 +53,11 @@ async function postBookingActions(hostId: number, booking: {
     status: string;
     slot: { startAt: Date; endAt: Date };
 }) {
+    
     await triggerSlotRegen(hostId,booking.slot.startAt);
+    
+    await starBookingNotificationWorkflow(booking.id);
+
     return formatBookingResponse(booking)
 }
 
