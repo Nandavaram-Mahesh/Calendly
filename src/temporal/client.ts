@@ -41,3 +41,11 @@ export async function startRegenerateHostSlotsWorkflow(input:RegenerateHostSlots
         [input]
     ); 
 }
+
+export async function starBookingNotificationWorkflow(bookingId: number) {
+    return startWorkflow(
+        'sendBookingConfirmationEmailWorkflow',
+        `send-booking-confirmation-email-${bookingId}-${Date.now()}`,
+        [bookingId]
+    )
+}
