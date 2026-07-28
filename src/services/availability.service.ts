@@ -1,5 +1,6 @@
 import { CreateAvailabilityExceptionDto, CreateAvailabilityRuleDto, UpdateAvailabilityExceptionDto, UpdateAvailabilityRuleDto } from "../dtos/index.js";
 import { findUserById,createException, createRule, findActiveRuleByHost, findExceptionByHost, findExceptionById, findRuleByHostId, findRuleByHostIdAndWeekday, findRuleById, removeException, removeRule, updateException, updateRule } from "../repositories/index.js";
+import { startRegenerateHostSlotsWorkflow } from "../temporal/client.js";
 import { BadRequestError } from "../utils/index.js";
 
 async function getRulesByHost(hostId:number){
@@ -27,26 +28,42 @@ async function createAvailabilityRule(hostId:number,data:CreateAvailabilityRuleD
 
     if(!user) throw new BadRequestError('Host not found');
 
-    return createRule(hostId,data);
+    const availabilityRule = await createRule(hostId,data);
+
+    await startRegenerateHostSlotsWorkflow({hostId});
+
+    return availabilityRule;
     
 }
 
 async function updateAvailabilityRule(hostId:number,ruleId:number,data:UpdateAvailabilityRuleDto){    
     
     const availabilityRule = await findRuleById(hostId)
+    
     if(!availabilityRule) throw new BadRequestError('Availability rule not found');
 
     if(availabilityRule.userId !== hostId) throw new BadRequestError('You are not authorized to update this availability rule');
     
-    return updateRule(ruleId,data);    
+    const availabilityRuleUpdated = await updateRule(ruleId,data);
+    
+    await startRegenerateHostSlotsWorkflow({hostId});
+
+    return availabilityRuleUpdated;
 }
 
 
 async function deleteAvailabilityRule(hostId:number,ruleId:number){    
     const availabilityRule = await findRuleById(hostId);
+
     if(!availabilityRule) throw new BadRequestError('Availability rule not found');    
+
     if(availabilityRule.userId !== hostId) throw new BadRequestError('You are not authorized to delete this availability rule');    
-    return removeRule(ruleId);    
+
+    const availabilityRuleDeleted = await removeRule(ruleId);
+    
+    await startRegenerateHostSlotsWorkflow({hostId});
+
+    return availabilityRuleDeleted;
 }
 
 // Exceptions
@@ -61,7 +78,11 @@ async function getExceptionById(exceptionId:number){
 }
 
 async function createAvailabilityException(hostId:number,data:CreateAvailabilityExceptionDto){    
-    return createException(hostId,data);    
+    const availabilityException = await createException(hostId,data);
+    
+    await startRegenerateHostSlotsWorkflow({hostId});
+
+    return availabilityException;    
 }
 
 async function updateAvailabilityException(hostId:number,exceptionId:number,data:UpdateAvailabilityExceptionDto){
@@ -70,14 +91,26 @@ async function updateAvailabilityException(hostId:number,exceptionId:number,data
     if(!exception) throw new BadRequestError('Availability exception not found');    
     if(exception.userId !== hostId) throw new BadRequestError('You are not authorized to update this availability exception');    
     
-    return updateException(exceptionId,data);
+    const availabilityExceptionUpdated = await updateException(exceptionId,data);
+    
+    await startRegenerateHostSlotsWorkflow({hostId});
+
+    return availabilityExceptionUpdated;
 }
 
 async function deleteAvailabilityException(hostId:number,exceptionId:number){    
+    
     const exception = await findExceptionById(exceptionId);    
+    
     if(!exception) throw new BadRequestError('Availability exception not found');    
+    
     if(exception.userId !== hostId) throw new BadRequestError('You are not authorized to delete this availability exception');    
-    return removeException(exceptionId);    
+    
+    const availabilityExceptionDeleted = await removeException(exceptionId);    
+
+    await startRegenerateHostSlotsWorkflow({hostId});
+
+    return availabilityExceptionDeleted;
 }
 
 
