@@ -42,6 +42,9 @@ async function updateEventType(hostId:number,eventId:number,data:UpdateEventType
     if(eventType.hostId !== hostId) throw new ForbiddenError('You are not authorized to update this event type');
 
     const UpdatedEventType = await updateET(eventId,data);
+
+    await startRegenerateHostSlotsWorkflow({hostId});
+
     return UpdatedEventType;
 }
 
@@ -54,7 +57,11 @@ async function deleteEventType(hostId:number,eventId:number) {
     
     if(eventType.hostId !== hostId) throw new ForbiddenError('You are not authorized to delete this event type');
     
-    return removeET(eventId)
+    const removedEventType = await removeET(eventId);
+
+    await startRegenerateHostSlotsWorkflow({hostId});
+
+    return removedEventType;
 }
 
 async function getEventTypePublic(hostId:number,eventSlug:string) {
