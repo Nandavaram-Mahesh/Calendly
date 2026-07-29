@@ -14,10 +14,16 @@ export const TEMPORAL_NAMESPACE = process.env.TEMPORAL_NAMESPACE || 'default';
 export const TEMPORAL_TASK_QUEUE = process.env.TEMPORAL_TASK_QUEUE || 'calendly-tasks';
 export const TEMPORAL_ENABLED = true;
 
-export const SMTP_HOST = process.env.SMTP_HOST || 'localhost';
-export const SMTP_PORT = Number(process.env.SMTP_PORT) || 1025;
-export const SMTP_USER = process.env.SMTP_USER || '';
-export const SMTP_PASS = process.env.SMTP_PASS || '';
-export const EMAIL_FROM = process.env.EMAIL_FROM || 'Calendly <noreply@example.com>';
+export const SMTP_HOST=process.env.SMTP_HOST || 'localhost';
+export const SMTP_PORT=Number(process.env.SMTP_PORT) || 1025;
+export const SMTP_USER=process.env.SMTP_USER || '';
+export const SMTP_PASS=process.env.SMTP_PASS || '';
+export const EMAIL_FROM=process.env.EMAIL_FROM || 'Calendly <noreply@example.com>';
+
+export const GOOGLE_CLIENT_ID=process.env.GOOGLE_CLIENT_ID || '';
+export const GOOGLE_CLIENT_SECRETE=process.env.GOOGLE_CLIENT_SECRETE || '';
+export const GOOGLE_REDIRECT_URI=process.env.GOOGLE_REDIRECT_URI || '';
+export const GOOGLE_SENDER_EMAIL=process.env.GOOGLE_SENDER_EMAIL || 'info@example.com';
+export const GOOGLE_REFRESH_TOKEN=process.env.GOOGLE_REFRESH_TOKEN || '';
 
 export {AppConfig};
