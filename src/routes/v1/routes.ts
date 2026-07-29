@@ -5,6 +5,7 @@ import { eventTypeRouter } from "./eventType.route.js";
 import { publicEventTypeRouter } from './publicEventType.route.js';
 import { availabilityRouter } from './availability.route.js';
 import { slotRouter } from './slot.route.js';
+import { googleIntegrationRouter } from './google.route.js';
 
 
 
@@ -15,6 +16,7 @@ router.use('/event-types',eventTypeRouter);
 router.use('/public',publicEventTypeRouter);
 router.use('/availability',availabilityRouter);
 router.use('/sync-slots',slotRouter);
+router.use('/integrations/google',googleIntegrationRouter)
 
 
 export default router;
