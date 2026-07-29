@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec \"tsx src/server.ts\"",
     "dev:worker": "nodemon --watch src --ext ts --exec \"tsx src/temporal/worker.ts\"",
+    "dev:google": "nodemon --watch src --ext ts --exec \"tsx src/utils/google-setup.ts\"",
     "start": "node ./dist/src/server.js",
     "build": "tsc",
     "prisma:format": "npx prisma format",
@@ -26,6 +27,7 @@
     "@temporalio/worker": "^1.21.1",
     "@temporalio/workflow": "^1.21.1",
     "express": "^5.2.1",
+    "googleapis": "^173.0.0",
     "ioredis": "^5.11.1",
     "luxon": "^3.7.2",
     "nanoid": "^5.1.16",
