@@ -25,5 +25,6 @@ export const GOOGLE_CLIENT_SECRETE=process.env.GOOGLE_CLIENT_SECRETE || '';
 export const GOOGLE_REDIRECT_URI=process.env.GOOGLE_REDIRECT_URI || '';
 export const GOOGLE_SENDER_EMAIL=process.env.GOOGLE_SENDER_EMAIL || 'info@example.com';
 export const GOOGLE_REFRESH_TOKEN=process.env.GOOGLE_REFRESH_TOKEN || '';
+export const GOOGLE_CALENDAR_ID=process.env.GOOGLE_CALENDAR_ID || 'primary';
 
 export {AppConfig};

@@ -1,3 +1,3 @@
-import { getSetupAuthUrl } from "../services/google-calendar.js";
+import { getSetupAuthUrl } from "../services/google-calendar.service.js";
 
 console.log(getSetupAuthUrl())

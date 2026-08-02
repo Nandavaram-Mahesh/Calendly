@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { exchangeSetupCode } from "../services/google-calendar.js";
+import { exchangeSetupCode } from "../services/google-calendar.service.js";
 
 export async function setupGoogleCallback (req:Request, res:Response) {
     
