@@ -1,10 +1,11 @@
 import { DateTime } from "luxon";
 import { findActiveEventTypesByHost, findActiveRuleByHost, findUserById } from "../repositories/index.js";
 import { NotFoundError } from "../utils/error.js";
-import { blockSlot, findBookedSlotsByHostInRange, findFutureSlotsByEventTypeInRange, upsertAvailableSlot } from "../repositories/slot.repository.js";
+import { blockSlot, bulkUpsertAvailableSlots, findBookedSlotsByHostInRange, findFutureSlotsByEventTypeInRange, upsertAvailableSlot } from "../repositories/slot.repository.js";
 import { findExceptionsByUserInRange } from "../repositories/availability.repository.js";
 import { applyExceptionsForDate, overlapsBooked, splitIntoSlots, TimeWindow, windowsForWeekdayRule } from "./slot-generation.service.js";
 import { AppConfig } from "../config/index.js";
+import { createId  } from "@paralleldrive/cuid2";
 
 export interface RegenerateHostSlotsInput{
     hostId:number,
@@ -76,19 +77,49 @@ export async function regenerateHostSlots(input:RegenerateHostSlotsInput){
                 (slot)=>slot.start>DateTime.utc() && !overlapsBooked(slot,bookedWindows,eventType.bufferBeforeMinutes,eventType.bufferAfterMinutes)
             ); // filter out slots that are in the past or overlap with a booked slot
 
-             
+            
+            const rows = []
+            
             for (const slot of slots){
                 
+                const now = new Date()
+
                 const startAt = slot.start.toUTC().toJSDate();
+                
                 const endAt = slot.end.toUTC().toJSDate();
                 
                 const key = `${eventType.id}|${startAt.toISOString()}|${endAt.toISOString()}`
                 
                 generatedValidSlotKeys.add(key)
                 
-                await upsertAvailableSlot(user.id,startAt,endAt,eventType.id);
-                
+                rows.push({
+                        id: createId(),
+                        hostId: user.id,
+                        eventTypeId: eventType.id,
+                        startAt,
+                        endAt,
+                        status: "AVAILABLE",
+                        updatedAt:now
+                    })
             }
+
+
+            await bulkUpsertAvailableSlots(rows);
+
+
+
+            // for (const slot of slots){
+                
+            //     const startAt = slot.start.toUTC().toJSDate();
+            //     const endAt = slot.end.toUTC().toJSDate();
+                
+            //     const key = `${eventType.id}|${startAt.toISOString()}|${endAt.toISOString()}`
+                
+            //     generatedValidSlotKeys.add(key)
+                
+            //     await upsertAvailableSlot(user.id,startAt,endAt,eventType.id);
+                
+            // }
 
         }
 
@@ -105,6 +136,17 @@ export async function regenerateHostSlots(input:RegenerateHostSlotsInput){
                 await blockSlot(slot.id);
             }
         }
+
+
+        // Desired State  --->  Actual State
+        //      |                  |
+        //      |                  |
+        // Generated slots      Database slots
+
+        //         Compare
+
+        //         Reconcile
+
     }
 
 }
