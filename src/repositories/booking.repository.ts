@@ -1,5 +1,7 @@
 import { prisma } from "../config/database.js";
+import { BadRequestError } from "../utils/error.js";
 import { getDbClient, type DbClient } from "./db-client.js";
+import { updateSlotStatus } from "./slot.repository.js";
 
 export interface ListHostBookingsFilters {
     status?: string;
@@ -29,6 +31,23 @@ export async function createBooking(data: CreateBookingData, db?: DbClient) {
         },
     });
 }
+
+
+export async function cancelBookedSlot(bookingId: number, db?: DbClient) {
+
+    const client = getDbClient(db);
+
+    const updatedBooking = await client.booking.update({
+        where: { id: bookingId },
+        data: { status: "CANCELLED" },
+        include: {
+            slot: true,
+        },
+    });
+
+    return updatedBooking;
+}
+
 
 export async function findHostBookings(hostId: number, filters: ListHostBookingsFilters = {}) {
     const slotStartAt: { gte?: Date; lte?: Date } = {};
@@ -77,15 +96,16 @@ export async function findBookingById(bookingId: number) {
     });
 }
 
-// export async function updateBookingCalendarDetails(
-//     bookingId: number,
-//     data: { meetLink: string; calendarEventId: string },
-//     db?: DbClient
-// ) {
-//     const client = getDbClient(db);
 
-//     return client.booking.update({
-//         where: { id: bookingId },
-//         data,
-//     });
-// }zz
+export async function updateBookingCalendarDetails(
+    bookingId: number,
+    data: { meetLink: string; calendarEventId: string },
+    db?: DbClient
+) {
+    const client = getDbClient(db);
+
+    return client.booking.update({
+        where: { id: bookingId },
+        data,
+    });
+}
