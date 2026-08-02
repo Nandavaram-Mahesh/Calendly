@@ -1,5 +1,7 @@
 import { prisma } from "../config/database.js";
 import { DbClient, getDbClient } from "./db-client.js";
+import { Prisma } from "../../generated/prisma/client.js";
+
 
 export async function findBookedSlotsByHostInRange(hostId: number, startDate: Date, endDate: Date){
     return  prisma.slot.findMany({
@@ -34,6 +36,64 @@ export async function upsertAvailableSlot(hostId: number, startAt: Date, endAt: 
     })
 
 }
+
+export async function updateSlotStatus(slotId:string , db?: DbClient) {
+    
+    const client = getDbClient(db);
+
+    await client.slot.update({
+        where: { id: slotId },
+        data: { status: "AVAILABLE" },
+    });
+}
+
+export async function bulkUpsertAvailableSlots(rows:{id:string,hostId: number, eventTypeId: number, startAt: Date, endAt: Date, status: string,updatedAt:Date}[]){
+
+    if (rows.length === 0) return;
+
+    const values = []
+
+    for (const row of rows) {
+        values.push(
+            Prisma.sql `
+            (
+                ${row.id},
+                ${row.hostId},
+                ${row.eventTypeId},
+                ${row.startAt},
+                ${row.endAt},
+                ${row.status},
+                ${row.updatedAt}
+            )`
+            );
+    }
+     
+
+
+    const query = Prisma.sql `
+
+                INSERT INTO "slots" ("id","hostId","eventTypeId","startAt","endAt","status","updatedAt")
+
+                VALUES
+
+                ${Prisma.join(values)}
+
+                ON CONFLICT ("eventTypeId","startAt","endAt")
+
+                DO UPDATE
+
+                SET
+
+                status = EXCLUDED.status
+            
+
+            `;
+    
+    await prisma.$executeRaw(query);
+    
+}
+
+
 
 export async function findFutureSlotsByEventTypeInRange(eventTypeId: number, startDate: Date, endDate: Date) {
 
