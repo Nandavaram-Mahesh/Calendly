@@ -44,8 +44,24 @@ export async function startRegenerateHostSlotsWorkflow(input:RegenerateHostSlots
 
 export async function starBookingNotificationWorkflow(bookingId: number) {
     return startWorkflow(
-        'sendBookingConfirmationEmailWorkflow',
+        'sendBookingNotificationWorkflow',
         `send-booking-confirmation-email-${bookingId}-${Date.now()}`,
         [bookingId]
     )
+}
+
+export async function startCancelBookingNotificationWorkflow(bookingId: number) {
+    return startWorkflow(
+        'sendCancelledBookingNotificationWorkflow',
+        `send-cancel-booking-confirmation-email-${Date.now()}`,
+        [bookingId]
+    )
+}
+
+export async function startCreateGoogleCalendarEventWorkflow(bookingId: number) {
+    return startWorkflow(
+        'createGoogleCalendarEventWorkflow',
+        `create-google-calendar-event-${bookingId}-${Date.now()}`,
+        [bookingId]
+    );
 }
